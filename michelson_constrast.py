@@ -22,7 +22,7 @@ path = Path(global_script_path + folder_path)
 n_experiments = sum(p.is_dir() for p in path.iterdir())
 fingerprints_amplitude_contrast = []
 fingerprints_phase_contrast = []
-
+# "'C:\Program Files\Allied Vision\Vimba X\api\pycthon\vmbpy-1.2.0-py3-none-win_amd64.whl
 
 ## iteration for the folder of the experiment 1, 2 ,3 ,4 ...
 # each folder contains images that which also contains multplefingermarks that must be analized
@@ -41,12 +41,14 @@ for n in range(1,n_experiments+1):
         phase_shifting_array.append(im)  
     
     
-    # number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="radius:", initial="0")
-    number_of_fingermarks_per_image = 1
+    number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="radius:", initial="0")
+    # number_of_fingermarks_per_image = 1
     # folder for storing Results/surfaceXX/michelson_contrast
     michelson_folder = global_script_path + folder_path + f"{n}/michelson_contrast"
     os.makedirs(michelson_folder, exist_ok=True)
-
+    
+    # counter for saving the selected fingermark 
+    fingermark_counter = 1
     # this while is only for the images where are more than 1 fingermark
     while number_of_fingermarks_per_image !=0:
         
@@ -99,17 +101,26 @@ for n in range(1,n_experiments+1):
             # --------------- GUARDAR INFO MIN MAX DE LAS REGIONES
             # --------------- GUARDAR PROMEDIO DE CONTRASTE EN LA HUELLA
 
-        fingermark_counter = 1
-        save_minmax_txt(list_of_mins_maxs_amplitude, michelson_folder + f'/contrast_amplitude{fingermark_counter}.txt')
-        save_minmax_txt(list_of_mins_maxs_phase, michelson_folder + f'/contrast_phase{fingermark_counter}.txt')
 
+        
+
+
+        fingermark_folder = michelson_folder + f"/fingermark_{fingermark_counter}"
+        print("fingermarkfolderdebugging",fingermark_folder)
+        os.makedirs(fingermark_folder, exist_ok=True)
+        path_for_amplitude  = fingermark_folder + f"/amplitude_fingermark_{fingermark_counter}.png"
+        path_for_phase      = fingermark_folder + f"/phase_fingermark_{fingermark_counter}.png"
+
+        save_minmax_txt(list_of_mins_maxs_amplitude, fingermark_folder + f'/contrast_amplitude{fingermark_counter}.txt')
+        save_minmax_txt(list_of_mins_maxs_phase, fingermark_folder + f'/contrast_phase{fingermark_counter}.txt')
 
         amplitude_from_complex, unwrapped_phase = np.uint8(255*normalize_array(amplitude_from_complex)), np.uint8(255*normalize_array(phase))
-        path_for_amplitude, path_for_phase = michelson_folder + f"/amplitude_fingermark_{fingermark_counter}.png", michelson_folder + f"/phase_fingermark_{fingermark_counter}.png"
-        
+
         cv2.imwrite(path_for_amplitude,overlay_amplt)
         cv2.imwrite(path_for_phase, overlay_phase)
 
+        number_of_fingermarks_per_image -=1
+        fingermark_counter +=1
 
 
         # necesito guardar:
@@ -121,8 +132,7 @@ for n in range(1,n_experiments+1):
         # -imagen phase, imagen amplt con las regiones
         #
         
-        number_of_fingermarks_per_image -=1
-        fingermark_counter +=1
+
 
 
     # plt.plot(fingerprints_amplitude_contrast);plt.title('phase_contrast');plt.show()

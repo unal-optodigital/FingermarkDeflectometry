@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from skimage.restoration import unwrap_phase
 import matplotlib.pyplot as plt
-# import vmbpy
-# from vmbpy import *
+import vmbpy
+from vmbpy import *
 from screeninfo import get_monitors
 import sys
 import cv2
