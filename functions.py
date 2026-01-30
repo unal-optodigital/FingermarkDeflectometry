@@ -267,7 +267,7 @@ def phase_compensation(wrappedphase):
 
     # creation of the polynomio
     def polynomial(X, Y, slider_value1, slider_value2,slider_value3,slider_value4, slider_value5):                  # FASE polynomial EN X,Y, 
-        return slider_value1 * X + slider_value2*Y + slider_value3*X**2 + slider_value4 * X**2 + slider_value5
+        return slider_value1 * X + slider_value2*Y + slider_value3*X**2 + slider_value4 * Y**2 + slider_value5
 
     # plots
     fig, ax = plt.subplots(figsize=(13, 8))                          
@@ -286,9 +286,9 @@ def phase_compensation(wrappedphase):
     slider_ax2 = plt.axes([0.1, 0.25, 0.03, 0.65])
     slider2 = Slider(slider_ax2, 'y', -2,2, valinit=0, valstep=0.001,orientation='vertical')
     slider_ax3=plt.axes([0.8, 0.25, 0.03, 0.65])
-    slider3=Slider(slider_ax3, 'x^2', -2, 2, valinit=0, valstep=0.001,orientation='vertical')
+    slider3=Slider(slider_ax3, 'x^2', -0.5, 0.5, valinit=0, valstep=0.0001,orientation='vertical')
     slider_ax4=plt.axes([0.04, 0.25, 0.03, 0.65])
-    slider4=Slider(slider_ax4, 'y^2', -2, 2, valinit=0, valstep=0.001,orientation='vertical')
+    slider4=Slider(slider_ax4, 'y^2', -0.5, 0.5, valinit=0, valstep=0.0001,orientation='vertical')
 
  
  

@@ -15,7 +15,7 @@ from pathlib import Path
 # Para estas imágenes recortadas, se obtiene la fase y la amplitud
 # con la amplitud la idea es meterla directamente en la función de evaluación de contraste
 # con la fase la idea es desenvolverla y compensarla lo máximo posible para poder obtener una medida de la visibilidad
-surface_type = "Broken_phone_on" # Aluminium_surface, Coffecup, Sink, Stainless steel table top
+surface_type = "Coffecup" # Aluminium_surface, Coffecup, Sink, Stainless steel table top
 global_script_path = os.path.dirname(__file__)
 folder_path = "/Results/" + surface_type + f"/images/"
 path = Path(global_script_path + folder_path)
@@ -26,8 +26,8 @@ fingerprints_phase_contrast = []
 
 ## iteration for the folder of the experiment 1, 2 ,3 ,4 ...
 # each folder contains images that which also contains multplefingermarks that must be analized
-for n in range(1,n_experiments+1):
-
+# for n in range(1,n_experiments+1):
+for n in range(7,9):
     #------------------------ entra a la carpeta n, se leen los Phase_i y ampl, se almacena todo en la lista []
     phase_shifting_array = []
 
@@ -46,7 +46,7 @@ for n in range(1,n_experiments+1):
     # folder for storing Results/surfaceXX/michelson_contrast
     michelson_folder = global_script_path + folder_path + f"{n}/michelson_contrast"
     os.makedirs(michelson_folder, exist_ok=True)
-    
+
     # counter for saving the selected fingermark 
     fingermark_counter = 1
     # this while is only for the images where are more than 1 fingermark
@@ -74,7 +74,7 @@ for n in range(1,n_experiments+1):
         phase = phase_calculation_from_array(phase_shifting_array_cropped)
         
         # unwrapped phase after substacting the carrier phase
-        # unwrapped_phase = 255*normalize_array(unwrap_phase ( 2*np.pi*normalize_array( phase_compensation(phase) ) - np.pi ))
+        # unwrapped_phase = normalize_array(unwrap_phase ( 2*np.pi*normalize_array( phase_compensation(phase) ) - np.pi ))
         unwrapped_phase = phase_compensation(phase)
 
 
