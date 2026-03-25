@@ -5,6 +5,7 @@ __pycache__/
 *.tif
 *.txt
 *.csv
+*.txt
 *.pdf
 *.pyc
 git rm -r --cached __pycache__
