@@ -8,7 +8,5 @@ __pycache__/
 *.txt
 *.pdf
 *.pyc
-git rm -r --cached __pycache__
-git rm -r --cached *.pyc
-git add .gitignore
-git commit -m "Ignore Python bytecode"
+git rm --cached *.txt
+
