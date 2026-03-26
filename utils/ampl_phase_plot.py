@@ -677,8 +677,6 @@ This if only for different donors. Uncomment if need to apply
 #     save_path_pdf=str(base_folder / "all_amplitudes.pdf")
 # )
 
-def printdd():
-    print(surface_type)
 
 surface_type = "" # Aluminium_surface, Coffecup, Sink, Stainless steel table top
 print(surface_type)
