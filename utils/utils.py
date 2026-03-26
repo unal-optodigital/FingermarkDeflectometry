@@ -399,7 +399,7 @@ def positionate_camera():
                 cv2.destroyAllWindows()
 
 def init_camera(exposure_time: int = 4000, 
-                gain: int = 0, 
+                gain: float = 0, 
                 pixel_format: str = 'Mono8'):
     '''
     Initialize camera with exposure_time, gain, and pixel format.
@@ -426,7 +426,7 @@ def init_camera(exposure_time: int = 4000,
             cam.get_feature_by_name('ExposureAuto').set('On')
 
 
-        cam.get_feature_by_name('Gain').set(gain)  
+        # cam.get_feature_by_name('Gain').set(gain)  
         if pixel_format == 'Mono8':
             cam.set_pixel_format(PixelFormat.Mono8) 
         elif pixel_format == 'RGB8':
@@ -455,7 +455,7 @@ def create_folder(path_folder: str):
     if not os.path.exists(path_folder):
         os.makedirs(path_folder)
 
-def phase_shifting_loop(cam, patterns_to_project):
+def phase_shifting_loop(cam, vmb, patterns_to_project):
     
     """
     Loop where the acquisition of shifted-pattern frames will happen
@@ -516,11 +516,11 @@ def save_8_bit_images(array_of_images, path_folder: str):
             cv2.imwrite(path_folder + f"/Phase_{i}.png", array_of_images[i])
         # realización de la compensacion
         # compensation = input("Realize the phase compensation (yes) (no): ")
-        compensation = 'yes'
-        if compensation.lower() == "yes":
-            compensated_phase = phase_compensation(phase)
-            plot_arrays([phase,compensated_phase, amplitude,color_image], ncols=2, cmap='gray')
-            cv2.imwrite(path_folder+"/compensated_phase.png", np.uint8(255*compensated_phase/np.max(compensated_phase)))
+        # compensation = 'yes'
+        # if compensation.lower() == "yes":
+        #     compensated_phase = phase_compensation(phase)
+        #     plot_arrays([phase,compensated_phase, amplitude,color_image], ncols=2, cmap='gray')
+        #     cv2.imwrite(path_folder+"/compensated_phase.png", np.uint8(255*compensated_phase/np.max(compensated_phase)))
     print("Images succesfully saved")
 
 def run_camera_and_fringes_ui(
@@ -661,7 +661,7 @@ def run_camera_and_fringes_ui(
     def frame_handler(cam: Camera, stream: Stream, frame: Frame):
         """Callback corto: convierte a Mono8, copia numpy y reencola; siempre requeue."""
         try:
-            frame.convert_pixel_format(PixelFormat.Mono8)
+            # frame.convert_pixel_format(PixelFormat.Mono8)
             img = frame.as_opencv_image().copy()
             # most recent frame
             try:
@@ -684,7 +684,8 @@ def run_camera_and_fringes_ui(
             # for slider changing in real time
             
             camera_resolution = (int(cam.Width.get()), int(cam.Height.get()))
-            scale = min(main_screen_width/camera_resolution[0], main_screen_height/camera_resolution[1])
+            scale = 0.7*min(main_screen_width/camera_resolution[0], main_screen_height/camera_resolution[1])
+            print("camera_resolution:", camera_resolution)
 
             state['cam'] = cam
             _set_exposure_if_possible(cam, state['exposure_time'])
@@ -708,7 +709,7 @@ def run_camera_and_fringes_ui(
             else:
                 # initial value
                 _set_exposure_if_possible(cam, state['exposure_time'])
-
+            cam.set_pixel_format(PixelFormat.Mono8) 
             # Init streaming
             cam.start_streaming(frame_handler)
             # cam.get_feature_by_name("s")
@@ -779,14 +780,14 @@ def run_camera_and_fringes_ui(
     return projected_pattern, exposure_final_us
 
 def run_camera(exposure_time: float, pixel_format: str):
-    try:
-        init_camera(exposure_time, pixel_format)
+    # try:
+    init_camera(exposure_time, pixel_format)
         
-    except:
-        print("camera is not connected.")
-        close_camera()
-        # exit()
-        pass
+    # except:
+        # print("camera is not connected.")
+        # close_camera()
+        # # exit()
+        # pass
 
 def load_image_gray(path: str):
     """
@@ -889,7 +890,7 @@ def partition_in_boxes(h: int, w: int, cols_per_row=(5,5,5,5,5)):
 def region_min_max(img: np.ndarray, cols_per_row=(3, 2)):
     """Calculate min/max and global coords (y,x) in  each box"""
     if img.ndim != 2:
-        raise ValueError("img debe ser 2D (grises).")
+        raise ValueError("img must be 2D(gray).")
 
     h, w = img.shape
     regs = partition_in_boxes(h, w, cols_per_row=cols_per_row)
@@ -920,14 +921,14 @@ def region_min_max(img: np.ndarray, cols_per_row=(3, 2)):
     
 def plot_regions_with_mins_and_maxs(img: np.ndarray, info_list) -> list[list[float]]:
     """
-    Dibuja las regiones (bounds) y marca min/max (posiciones ya vienen en info_list).
-    Además retorna: [[min,max], [min,max], ...] en el mismo orden de info_list.
+    Draws (bounds) and asign min/max 
+    Returns: [[min,max], [min,max], ...] 
 
-    Requiere que cada dict d tenga:
+    Requires that each dict contrains:
       d["bounds"] = (y0,y1,x0,x1)
       d["min_pos"] = (y_min,x_min)
       d["max_pos"] = (y_max,x_max)
-    (region_id es opcional para el label)
+    (region_id optional)
     """
     fig, ax = plt.subplots(figsize=(9, 6))
     ax.imshow(img, cmap="gray", interpolation="nearest")
@@ -985,13 +986,13 @@ def segmentation_of_regions(
     return_overlay: bool = False
 ):
     if nrows < 1 or ncols < 1:
-        raise ValueError("nrows y ncols deben ser >= 1")
+        raise ValueError("nrows y ncols must be >= 1")
     if radius < 0:
-        raise ValueError("radius debe ser >= 0")
+        raise ValueError("radius must >= 0")
     if stat not in ("mean", "median", "mode"):
-        raise ValueError("stat debe ser: 'mean', 'median' o 'mode'")
+        raise ValueError("stat must be: 'mean', 'median' o 'mode'")
     if bins < 2:
-        raise ValueError("bins debe ser >= 2")
+        raise ValueError("bins muest be >= 2")
 
     # a gris 2D
     if img.ndim == 3:
@@ -1006,7 +1007,7 @@ def segmentation_of_regions(
 
     nreg = nrows * ncols
     vals = [[] for _ in range(nreg)]
-    pos  = [[None, None] for _ in range(nreg)]  # <- clicks: (y,x) para pick0 y pick1
+    pos  = [[None, None] for _ in range(nreg)]  # <- clicks: (y,x) for pick0 and pick1
     k = [0] * nreg
 
     def bid(x, y):
@@ -1041,7 +1042,7 @@ def segmentation_of_regions(
 
     fig, ax = plt.subplots(figsize=(9, 6))
     ax.imshow(a, cmap="gray", interpolation="nearest")
-    ax.set_title(f"Click: picks por región | stat={stat} radius={radius} | Cierra para terminar")
+    ax.set_title(f"Click: picks per region | stat={stat} radius={radius} | close for finisshing")
     ax.set_axis_off()
 
     for r in range(nrows):
@@ -1150,7 +1151,7 @@ def apply_clicks_to_image(
             return float(np.median(patch))
         return mode_value(patch)
 
-    # calcular [[min,max], ...] usando las dos posiciones por región
+    # calculates [[min,max], ...] 
     out = []
     for p0, p1 in pos:
         if p0 is None or p1 is None:
@@ -1167,7 +1168,7 @@ def apply_clicks_to_image(
     fig, ax = plt.subplots(figsize=(9, 6))
     ax.imshow(a, cmap="gray", interpolation="nearest")
     ax.set_axis_off()
-    ax.set_title("Aplicado desde clicks guardados")
+    ax.set_title("Applied since saved clicks")
 
     for r in range(nrows):
         for c in range(ncols):
@@ -1223,8 +1224,8 @@ def  save_txt(x_data=None, y_data=None, file_name:str=None):
 
 def imshow_with_textbox_ok(img: np.ndarray, label: str = "Valor:", initial: str = "1"):
     """
-    Muestra un imshow + un TextBox para escribir un número + un botón OK que cierra.
-    Retorna el valor (float) al cerrar.
+    imshow + a TextBox for writing a number + ok buttom and close it.
+    Returns the value (float) when it is closed.
     """
 
     state = {"val": None}
@@ -1244,7 +1245,6 @@ def imshow_with_textbox_ok(img: np.ndarray, label: str = "Valor:", initial: str 
         state["val"] = float(text)
 
     def on_ok(event):
-        # si nunca dio Enter, intenta parsear lo que está escrito
         if state["val"] is None:
             try:
                 parse(tb.text)
@@ -1252,8 +1252,8 @@ def imshow_with_textbox_ok(img: np.ndarray, label: str = "Valor:", initial: str 
                 state["val"] = None
         plt.close(fig)
 
-    tb.on_submit(parse)      # Enter en la caja
-    btn.on_clicked(on_ok)    # click en OK
+    tb.on_submit(parse)    
+    btn.on_clicked(on_ok)   
 
     plt.show()
     return state["val"]
@@ -1272,21 +1272,17 @@ def save_minmax_txt(listas, txt_path):
 
 def reemplazar_linea(nombre_archivo, numero_linea, nuevo_texto):
     try:
-        # 1. Leer todas las lineas
         with open(nombre_archivo, 'r', encoding='utf-8') as archivo:
             lineas = archivo.readlines()
 
-        # 2. Verificar que la línea exista (las listas en Python empiezan en 0)
         if 0 <= numero_linea < len(lineas):
-            # Reemplazar la línea (añadiendo salto de línea al final)
             lineas[numero_linea] = nuevo_texto + '\n'
             
-            # 3. Escribir las líneas actualizadas de vuelta al archivo
             with open(nombre_archivo, 'w', encoding='utf-8') as archivo:
                 archivo.writelines(lineas)
-            print(f"Línea {numero_linea} actualizada correctamente.")
+            print(f"Línea {numero_linea} correctly updated")
         else:
-            print("Error: El número de línea está fuera de rango.")
+            print("Error: the number of lines is out of range")
             
     except FileNotFoundError:
         print("Error: El archivo .txt no fue encontrado.")

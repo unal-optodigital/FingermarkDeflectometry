@@ -1,6 +1,22 @@
-from utils import utils
 from utils.utils import *
+from utils import utils
 import os
+
+"""
+Script for phase-shifting and amplitude, phase retrieval 
+Controls:
+    1) a second screen which displays the sinusoidal pattern, 
+    2) a vimba camera from allied vision for acquire the frames 
+Calculate:
+    1) Phase map
+    2) modulated map
+Save: in path_to_repo\surface_results\surface
+    1) Save the shifted-pattern frames Phase0,Phase1,Phase2,Phase3...
+    2) Save the modulated map and thw erapped phase
+"""
+
+
+
 
 #---- global variables
 initial_freq = 60  # cycles/m                 # initial freq for projected fringes
@@ -12,7 +28,7 @@ path_folder = os.path.join(base_path, f"surface_results/surface") # path
 create_folder(path_folder)
 
 # evaluation of the second screen properties for displaying sinusoidal pattern 
-main_monitor_size, window_displacement, resize_window_height, resize_window_width, monitors_size_mm = evaluate_and_detect_monitors()
+main_monitor_size, window_displacement, resize_window_height, resize_window_width, monitors_size_mm = utils.evaluate_and_detect_monitors()
 
 # the user have to posicionate the camera to observe the fringe projection 
 # main loop
@@ -35,7 +51,7 @@ while True:
     vmb = utils.vmb                     # vimba system
 
     # shifted_frames is a LIST of frames acquired from the camera, 
-    shifted_frames = phase_shifting_loop(cam, patterns_to_display)
+    shifted_frames = phase_shifting_loop(cam, vmb, patterns_to_display)
 
     # post-proccesing
     # obatain significant ...phase, phasor, compensated_phase, modulated intensity map... from the acquired frames
@@ -47,11 +63,20 @@ while True:
     array_of_images.append(amplitude_from_complex)
     array_of_images.append(phase)
 
-    save_images = (input("save_images (yes) (no): ")).lower() # ask in terminal to save or not the images
+    plot_arrays(array_of_images[0],array_of_images[-1], array_of_images[-2])
 
+    save_images = (input("save_images (yes) (no): ")).lower() # ask in terminal to save or not the images
     if save_images in {"si", "sí", "s", "yes", "y", "Y", "YES"}:
-        save_8_bit_images(array_of_images,path_folder)  
+        save_8_bit_images(array_of_images, path_folder)  
         close_camera()
         break
+
+    run_again = (input("Run again the retrieval? (yes) (no): ")).lower() # ask in terminal to save or not the images
+    if run_again in {"si", "sí", "s", "yes", "y", "Y", "YES"}:
+        print("running again")
+    else:
+        close_camera()
+        break
+
 
     
