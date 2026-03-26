@@ -6,3 +6,7 @@ Pillow==12.1.1
 screeninfo==0.8.1
 skimage==0.0
 vmbpy==1.2.0
+vmbpy #@ file:///C:/../../Repository_path/vmbpy-1.1.0-py3-none-win_amd64.whl#sha256=e1ab082e6a0d41e5b972d14d10bdf307afb7cf66e28761296012cc7178b0b640
+python3 -m pip install '/path/to/vmbpy-X.Y.Z-py-none-any.whl[numpy,opencv]'
+or 
+python -m pip install 'C:\Program Files\Allied Vision\Vimba X\api\python\vmbpy-1.2.0-py3-none-win_amd64[numpy,opencv]'
