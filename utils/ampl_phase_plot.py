@@ -5,7 +5,7 @@ import numpy as np
 import os
 from pathlib import Path
 # REQUIREMENTS
-# DATA PATH: Results/Surface/images/michelson_contrast/CSV
+# DATA PATH: surface_results/Surface/images/michelson_contrast/CSV
 
 # REQUIRED CVS: amplitude_summary.cvs     grading.cvs      phase_summary.csv
 
@@ -646,7 +646,7 @@ def make_csv_plot(csv_path_1, csv_path_2, grading_csv_path=None):
 
 
 global_script_path = os.path.dirname(__file__)
-base_folder = Path(global_script_path) / "Results" / "Donors_csv"
+base_folder = Path(global_script_path) / "surface_results" / "Donors_csv"
 
 amplitude_csv_paths = [
     str(base_folder / str(i) / "amplitude_summary.csv")
@@ -680,7 +680,7 @@ This if only for different donors. Uncomment if need to apply
 
 surface_type = "" # Aluminium_surface, Coffecup, Sink, Stainless steel table top
 print(surface_type)
-michelson_folder = global_script_path +"/Results/" + surface_type + f"/images/michelson_contrast"
+michelson_folder = global_script_path +"/surface_results/" + surface_type + f"/images/michelson_contrast"
 csv_path_1 = michelson_folder +"/amplitude_summary.csv"
 csv_path_2 = michelson_folder +"/phase_summary.csv"
 grading_csv_path = michelson_folder +"/grading.csv"

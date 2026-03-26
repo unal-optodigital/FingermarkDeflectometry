@@ -6,7 +6,7 @@ import os
 initial_freq = 60  # cycles/m                 # initial freq for projected fringes
 initial_exposure = 10000  # 10 ms
 base_path = os.path.dirname(__file__) # Directory for saving phase-shifting images
-path_folder = os.path.join(base_path, f"Results/surface") # path 
+path_folder = os.path.join(base_path, f"surface_results/surface") # path 
 
 # creation of the folder for saving images
 create_folder(path_folder)
