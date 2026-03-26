@@ -1,12 +1,13 @@
 __pycache__/
-*.py[cod]
 *.tiff
 *.png
+*.tif
+*.jpg
 *.tif
 *.txt
 *.csv
 *.txt
 *.pdf
 *.pyc
-git rm --cached *.txt
+
 
