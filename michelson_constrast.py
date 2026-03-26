@@ -11,11 +11,12 @@ surface_type = "Sink" # "Coffecup", "Sink"
 ampl_phase_plot.surface_type = surface_type
 global_script_path = os.path.dirname(__file__)
 images_path = "/surface_results/" + surface_type + f"/images/"
+
 path = Path(global_script_path + images_path)
 n_experiments = sum(p.is_dir() for p in path.iterdir())
 fingerprints_amplitude_contrast = []
 fingerprints_phase_contrast = []
-save_info = False
+save_info = True
 local_correction = False
 analysis_over_different_donors = False
 
@@ -127,20 +128,35 @@ if analysis_over_different_donors:
             print("\nResumen amplitud:");print(df_amp.head())
             print("\nResumen fase:");print(df_phase.head())
 
-                        # Comprobar si es un archivo
             if os.path.isfile( michelson_folder+"/grading.csv"):
                 print(" ")
             else:
                 print("the file for unil grading doesnot exist.")
-                with open("vacio.csv", "w") as archivo:
-                    pass  # No hace nada, solo lo crea
-            ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv")
+                with open(michelson_folder + "/grading.csv", "w", encoding="utf-8", newline="") as archivo:
+                    archivo.write(
+                        "X_Pos,Grade_amplitude,Grade_phase\n"
+                        "1,+,±\n"
+                        "2,+,-\n"
+                        "3,+,-\n"
+                        "4,+,-\n"
+                        "5,+,-\n"
+                        "6,±,-\n"
+                        "7,±,-\n"
+                        "8,-,-\n"
+                        "9,-,-\n"
+                        "10,-,-\n"
+                        "11,-,-\n"
+                        "12,-,-\n"
+                        "13,-,-\n"
+                        "14,-,-\n")
+                    
+            ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv", michelson_fold = michelson_folder)
 
     else:
 
         fingermark_counter = 1 # inicia en la primer huella 
         
-        for n in range(1, n_experiments + 1 ):
+        for n in range(1, n_experiments + 1):
             #------------------------ entra a la carpeta n, se leen los Phase_i y ampl, se almacena todo en la lista []
             phase_shifting_array = []
 
@@ -157,7 +173,7 @@ if analysis_over_different_donors:
             
         
 
-            number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="radius:", initial="0")
+            number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="number of fingermarks:", initial="1")
 
             # folder for storing Results/surfaceXX/michelson_contrast
             michelson_folder = global_script_path + images_path + f"michelson_contrast"
@@ -249,16 +265,29 @@ if analysis_over_different_donors:
                 print("\nResumen amplitud:");print(df_amp.head())
                 print("\nResumen fase:");print(df_phase.head())\
                 
-                                # Comprobar si es un archivo
                 if os.path.isfile( michelson_folder+"/grading.csv"):
                     print(" ")
                 else:
                     print("the file for unil grading doesnot exist.")
-                    with open("vacio.csv", "w") as archivo:
-                        pass  # No hace nada, solo lo crea
-                # hacer plot completo
+                    with open(michelson_folder + "/grading.csv", "w", encoding="utf-8", newline="") as archivo:
+                        archivo.write(
+                            "X_Pos,Grade_amplitude,Grade_phase\n"
+                            "1,+,±\n"
+                            "2,+,-\n"
+                            "3,+,-\n"
+                            "4,+,-\n"
+                            "5,+,-\n"
+                            "6,±,-\n"
+                            "7,±,-\n"
+                            "8,-,-\n"
+                            "9,-,-\n"
+                            "10,-,-\n"
+                            "11,-,-\n"
+                            "12,-,-\n"
+                            "13,-,-\n"
+                            "14,-,-\n")
                 try:
-                    ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv")
+                    ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv", michelson_fold = michelson_folder)
                 except:
                     pass
 
@@ -291,7 +320,7 @@ else:
             phase_shifting_array.append(im)  
 
 
-        number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="radius:", initial="0")
+        number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="number of fingermarks:", initial="1")
         # folder for storing Results/surfaceXX/michelson_contrast
         michelson_folder = global_script_path + images_path + "/michelson_contrast"
         os.makedirs(michelson_folder, exist_ok=True)
@@ -368,15 +397,29 @@ else:
             print("\nResumen fase:");print(df_phase.head())
 
 
-            # Comprobar si es un archivo
             if os.path.isfile( michelson_folder+"/grading.csv"):
                 print(" ")
             else:
                 print("the file for unil grading doesnot exist.")
-                with open("vacio.csv", "w") as archivo:
-                    pass  # No hace nada, solo lo crea
+                with open(michelson_folder + "/grading.csv", "w", encoding="utf-8", newline="") as archivo:
+                    archivo.write(
+                        "X_Pos,Grade_amplitude,Grade_phase\n"
+                        "1,+,±\n"
+                        "2,+,-\n"
+                        "3,+,-\n"
+                        "4,+,-\n"
+                        "5,+,-\n"
+                        "6,±,-\n"
+                        "7,±,-\n"
+                        "8,-,-\n"
+                        "9,-,-\n"
+                        "10,-,-\n"
+                        "11,-,-\n"
+                        "12,-,-\n"
+                        "13,-,-\n"
+                        "14,-,-\n")  
 
-            ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv")
+            ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv", michelson_fold = michelson_folder)
 
     else:
 
@@ -399,7 +442,7 @@ else:
             
         
 
-            number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="radius:", initial="0")
+            number_of_fingermarks_per_image = imshow_with_textbox_ok(phase_shifting_array[-1], label="number of fingermarks:", initial="1")
             # number_of_fingermarks_per_image = 1
             # folder for storing Results/surfaceXX/michelson_contrast
             michelson_folder = global_script_path + images_path + f"michelson_contrast"
@@ -491,17 +534,32 @@ else:
                 print("\n modualtedmap:");print(df_amp.head())
                 print("\n phase:");print(df_phase.head())\
 
-                # Comprobar si es un archivo
                 if os.path.isfile( michelson_folder+"/grading.csv"):
                     print(" ")
                 else:
                     print("the file for unil grading doesnot exist.")
-                    with open("vacio.csv", "w") as archivo:
-                        pass  # No hace nada, solo lo crea
+                    with open(michelson_folder + "/grading.csv", "w", encoding="utf-8", newline="") as archivo:
+                        archivo.write(
+                            "X_Pos,Grade_amplitude,Grade_phase\n"
+                            "1,+,±\n"
+                            "2,+,-\n"
+                            "3,+,-\n"
+                            "4,+,-\n"
+                            "5,+,-\n"
+                            "6,±,-\n"
+                            "7,±,-\n"
+                            "8,-,-\n"
+                            "9,-,-\n"
+                            "10,-,-\n"
+                            "11,-,-\n"
+                            "12,-,-\n"
+                            "13,-,-\n"
+                            "14,-,-\n")
 
-                # full plot 
-                try:
-                    ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv")
-                except:
-                    pass
+                # full plot
+                ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv", michelson_fold = michelson_folder)
+                # try:
+                #     ampl_phase_plot.make_csv_plot(amp_csv, phase_csv, michelson_folder+"/grading.csv", surface = surface_type)
+                # except:
+                #     pass
 

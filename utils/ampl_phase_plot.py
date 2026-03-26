@@ -4,6 +4,7 @@ from matplotlib.lines import Line2D
 import numpy as np
 import os
 from pathlib import Path
+import sys
 # REQUIREMENTS
 # DATA PATH: surface_results/Surface/images/michelson_contrast/CSV
 
@@ -214,10 +215,14 @@ def make_multi_amplitude_plot(
     plt.show()
 
 
-def make_csv_plot(csv_path_1, csv_path_2, grading_csv_path=None):
+def make_csv_plot(csv_path_1, csv_path_2, grading_csv_path=None, michelson_fold = None):
     # =========================================================
     # 1. HELPERS
     # =========================================================
+
+
+    michelson_folder = michelson_fold
+
     def normalize_grade(g):
         g = str(g).strip()
         g = g.replace("–", "-").replace("—", "-")
@@ -637,15 +642,19 @@ def make_csv_plot(csv_path_1, csv_path_2, grading_csv_path=None):
         ax.set_xlim(0.5 * x_min, 1.02 * x_max)
 
     plt.tight_layout()
-    plt.savefig(michelson_folder + "/contrast_with_errorbars_and_grade.png", dpi=1000, bbox_inches="tight")
-    plt.savefig(michelson_folder + "/contrast_with_errorbars_and_grade.pdf", bbox_inches="tight")
+    os.makedirs(michelson_folder, exist_ok=True)
+    png_path = os.path.join(michelson_folder, "contrast_with_errorbars_and_grade.png")
+    pdf_path = os.path.join(michelson_folder, "contrast_with_errorbars_and_grade.pdf")
+    print("pngpath: ", png_path)
+    plt.savefig(png_path,dpi=1000, bbox_inches="tight")
+    plt.savefig(pdf_path, bbox_inches="tight")
     plt.show()
 
 
 
 
+global_script_path = os.getcwd()
 
-global_script_path = os.path.dirname(__file__)
 base_folder = Path(global_script_path) / "surface_results" / "Donors_csv"
 
 amplitude_csv_paths = [
@@ -678,12 +687,7 @@ This if only for different donors. Uncomment if need to apply
 # )
 
 
-surface_type = "" # Aluminium_surface, Coffecup, Sink, Stainless steel table top
-print(surface_type)
-michelson_folder = global_script_path +"/surface_results/" + surface_type + f"/images/michelson_contrast"
-csv_path_1 = michelson_folder +"/amplitude_summary.csv"
-csv_path_2 = michelson_folder +"/phase_summary.csv"
-grading_csv_path = michelson_folder +"/grading.csv"
+
 # from csv_save_data import collect_fingermark_summaries, save_outputs
 # df_amp, df_phase = collect_fingermark_summaries(michelson_folder)
 # amp_csv, phase_csv = save_outputs(michelson_folder, df_amp, df_phase)
