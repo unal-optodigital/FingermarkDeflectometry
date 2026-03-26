@@ -17,7 +17,7 @@ python -m pip install 'PATH_TO_REPOSITORY/FingerprintDeflectometry/vmbpy-1.1.0-p
 
 
 ## Contact
-   -Julián Pérez-Carvajal    (julperezca@unal.edu.co)
+   -Julian Perez-Carvajal    (julperezca@unal.edu.co)
    -Carlos A. Buitrago-Duque (cabuitragod@unal.edu.co)
    -Jorge I. Garcia-Sucerquia (jigarcia@unal.edu.co)
   
